@@ -33,7 +33,7 @@ DTO para transferência de dados
 usados na coleta da API.
 */
 type NeighborhoodInfoDTO struct {
-	ID  int64
+	ID  uint
 	URL string
 }
 
