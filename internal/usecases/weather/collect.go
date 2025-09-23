@@ -45,7 +45,7 @@ func (usecase *CollectWeatherDataUseCase) Execute() error {
 	ctx := context.Background()
 
 	// Active neighborhoods
-	neighborhoods, err :=gorm.G[domain.Neighborhood](usecase.db).Where("active = ?", "true").Find(ctx)
+	neighborhoods, err :=gorm.G[domain.Neighborhood](usecase.db).Where("active = ?", true).Find(ctx)
 	if err != nil {
 		return err
 	}
