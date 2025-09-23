@@ -5,15 +5,27 @@ import "gorm.io/gorm"
 /*
 Entidade "Bairro", definida usando o modelo
 padrão do GORM e os atributos.
+
+Aqui, a lista de "WeatherData" indica que um bairro
+pode ter vários dados climáticos associados à ele.
+Essa é uma relação "One to Many".
+
+No banco de dados, a tabela "Bairro" NÃO
+armazena essa lista!
+É a tabela "Dados climáticos" que, em cada registro,
+indica de qual bairro aquele dado está relacionado.
+
+Veja "weather.go" para mais informações.
 */
 type Neighborhood struct {
 	gorm.Model
-	Name      string  `json:"name"`
-	Latitude  float32 `json:"latitude"`
-	Longitude float32 `json:"longitude"`
-	Habitants uint32  `json:"habitants"`
-	Area      float32 `json:"area"`
-	Active    bool    `json:"active"`
+	Name      string        `json:"name"`
+	Latitude  float32       `json:"latitude"`
+	Longitude float32       `json:"longitude"`
+	Habitants uint32        `json:"habitants"`
+	Area      float32       `json:"area"`
+	Active    bool          `json:"active"`
+	Weather   []WeatherData `json:"weather"`
 }
 
 /*
@@ -21,7 +33,7 @@ DTO para transferência de dados
 usados na coleta da API.
 */
 type NeighborhoodInfoDTO struct {
-	ID int64
+	ID  int64
 	URL string
 }
 
