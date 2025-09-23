@@ -42,7 +42,6 @@ func main() {
 
 		// Server setup
 		fx.Invoke(func(*http.Server) {}),
-
 	)
 
 	app.Run()
