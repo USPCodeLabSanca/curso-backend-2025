@@ -3,6 +3,7 @@ package neighborhood
 import (
 	"codelab/backend/internal/domain"
 	"context"
+	"errors"
 
 	"gorm.io/gorm"
 )
@@ -24,8 +25,13 @@ func NewFindNeighborhoodByIdUseCase(db *gorm.DB) *FindNeighborhoodByIdUseCase {
 	return &FindNeighborhoodByIdUseCase{db}
 }
 
-func (usecase *FindNeighborhoodByIdUseCase) Execute(id uint) (domain.Neighborhood, error) {
+func (usecase *FindNeighborhoodByIdUseCase) Execute(id uint) (*domain.Neighborhood, error) {
 	ctx := context.Background()
 
-	return gorm.G[domain.Neighborhood](usecase.db).Where("id = ?", id).First(ctx)
+	neighborhood, err := gorm.G[domain.Neighborhood](usecase.db).Where("id = ?", id).First(ctx) 
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		return nil, err
+	}
+
+	return &neighborhood, nil
 }
