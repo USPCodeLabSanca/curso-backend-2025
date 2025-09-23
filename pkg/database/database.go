@@ -12,7 +12,7 @@ import (
 Cria uma conexão com o banco de dados via GORM.
 Recebe as variáveis da conexão via struct config.
 */
-func ConnectDatabase(config *config.Config) (*gorm.DB, error) {
+func NewDatabaseConnection(config *config.Config) (*gorm.DB, error) {
 	dsn := fmt.Sprintf(
 		"host=%s port=%s user=%s password=%s dbname=%s sslmode=%s",
 		config.Postgres.Host,
