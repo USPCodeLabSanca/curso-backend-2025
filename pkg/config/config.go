@@ -17,7 +17,7 @@ type PostgresConfig struct {
 }
 
 func NewConfig() (*Config, error) {
-	viper.SetConfigFile(".env.example")
+	viper.SetConfigFile(".env")
 	viper.SetConfigType("env")
 	viper.AutomaticEnv()
 

@@ -27,6 +27,7 @@ type NeighborhoodHandler struct {
 	FindByIdUseCase    *neighborhood.FindNeighborhoodByIdUseCase
 	FindAllUseCase     *neighborhood.FindAllNeighborhoodsUseCase
 	FindActiveUseCase  *neighborhood.FindActiveNeighborhoodsUseCase
+	FindWeatherUseCase *neighborhood.FindNeighborhoodWeatherUseCase
 }
 
 func NewNeighborhoodHandler(
@@ -36,6 +37,7 @@ func NewNeighborhoodHandler(
 	findById *neighborhood.FindNeighborhoodByIdUseCase,
 	findAll *neighborhood.FindAllNeighborhoodsUseCase,
 	findActive *neighborhood.FindActiveNeighborhoodsUseCase,
+	findWeather *neighborhood.FindNeighborhoodWeatherUseCase,
 ) *NeighborhoodHandler {
 	return &NeighborhoodHandler{
 		CreateUseCase:     create,
@@ -44,6 +46,7 @@ func NewNeighborhoodHandler(
 		FindByIdUseCase:   findById,
 		FindAllUseCase:    findAll,
 		FindActiveUseCase: findActive,
+		FindWeatherUseCase: findWeather,
 	}
 }
 
@@ -144,4 +147,25 @@ func (h *NeighborhoodHandler) FindActive(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, neighborhoods)
+}
+
+func (h *NeighborhoodHandler) FindNeighborhoodWeather(c *gin.Context) {
+	idStr := c.Param("id")
+	id, err := strconv.ParseUint(idStr, 10, 0)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid ID"})
+		return
+	}
+
+	// Pegar datas da URL
+	start := c.Param("start")
+	end := c.Param("end")
+
+	neighborhood, err := h.FindWeatherUseCase.Execute(uint(id), start, end)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(200, neighborhood)
 }

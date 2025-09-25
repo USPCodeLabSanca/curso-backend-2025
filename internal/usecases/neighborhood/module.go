@@ -9,6 +9,7 @@ var Module = fx.Module("neighborhood-usecases",
 		NewFindActiveNeighborhoodsUseCase,
 		NewFindAllNeighborhoodsUseCase,
 		NewFindNeighborhoodByIdUseCase,
+		NewFindNeighborhoodWeatherUseCase,
 		NewUpdateNeighborhoodUseCase,
 	),
 )
