@@ -2,10 +2,15 @@ package config
 
 import "github.com/spf13/viper"
 
+/*
+Configurações a serem utilizadas em todo o projeto.
+*/
+
 type Config struct {
 	Postgres PostgresConfig
-	Workers int
-	API string
+	Workers  int
+	API      string
+	JWT      string
 }
 
 type PostgresConfig struct {
@@ -16,7 +21,17 @@ type PostgresConfig struct {
 	Port     string
 }
 
+/*
+Viper é uma biblioteca que facilita a definição
+de configurações baseadas em arquivos.
+No nosso caso, o arquivo base é o '.env', que armazena
+senha do banco de dados, etc.
+
+> Em um ambiente de produção, o '.env' NUNCA deve ser
+vazado, nem mesmo colocado no reposiótio do github.
+*/
 func NewConfig() (*Config, error) {
+	// Configurando para ler .env
 	viper.SetConfigFile(".env")
 	viper.SetConfigType("env")
 	viper.AutomaticEnv()
@@ -25,10 +40,8 @@ func NewConfig() (*Config, error) {
 		return nil, err
 	}
 
+	// Preencher a configuração com os valores lidos
 	var cfg Config
-	if err := viper.Unmarshal(&cfg); err != nil {
-		return nil, err
-	}
 
 	// Postgres setup
 	cfg.Postgres.User = viper.GetString("POSTGRES_USER")
@@ -38,6 +51,10 @@ func NewConfig() (*Config, error) {
 	cfg.Postgres.Port = viper.GetString("POSTGRES_PORT")
 
 	cfg.API = viper.GetString("API_URL")
+
+	cfg.Workers = 10
+
+	cfg.JWT = viper.GetString("TOKEN_SECRET")
 
 	return &cfg, nil
 }

@@ -2,8 +2,6 @@ package domain
 
 import (
 	"time"
-
-	"gorm.io/gorm"
 )
 
 /*
@@ -116,7 +114,10 @@ basta buscar todos os bairros com CollectedFrom = IdBairro.
 Veja "neighborhood.go" para mais informações.
 */
 type WeatherData struct {
-	gorm.Model
+	ID              uint        `json:"id" gorm:"primaryKey"`
+	CreatedAt       time.Time   `json:"created_at"`
+	UpdatedAt       time.Time   `json:"updated_at"`
+	DeletedAt       *time.Time  `json:"deleted_at,omitempty"`
 	Temperature     float32     `json:"temperature"`
 	Humidity        float32     `json:"humidity"`
 	RainProbability float32     `json:"rainProbability"`

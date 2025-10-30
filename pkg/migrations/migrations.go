@@ -1,6 +1,10 @@
 package migrations
 
-import "gorm.io/gorm"
+import (
+	"codelab/backend/internal/domain"
+
+	"gorm.io/gorm"
+)
 
 /*
 Aplica as migrações (criação / atualização]
@@ -9,5 +13,5 @@ de modelos definidas no domain.
 Para cada struct (entidade) uma tabela é gerada.
 */
 func ApplyMigrations(db *gorm.DB) error {
-	return db.AutoMigrate()
+	return db.AutoMigrate(&domain.Neighborhood{}, &domain.WeatherData{}, &domain.User{})
 }

@@ -1,6 +1,8 @@
 package domain
 
-import "gorm.io/gorm"
+import (
+	"time"
+)
 
 /*
 Entidade "Bairro", definida usando o modelo
@@ -18,14 +20,17 @@ indica de qual bairro aquele dado está relacionado.
 Veja "weather.go" para mais informações.
 */
 type Neighborhood struct {
-	gorm.Model
+	ID        uint          `json:"id" gorm:"primaryKey"`
+	CreatedAt time.Time     `json:"created_at"`
+	UpdatedAt time.Time     `json:"updated_at"`
+	DeletedAt *time.Time    `json:"deleted_at,omitempty"`
 	Name      string        `json:"name"`
 	Latitude  float32       `json:"latitude"`
 	Longitude float32       `json:"longitude"`
 	Habitants uint32        `json:"habitants"`
 	Area      float32       `json:"area"`
 	Active    bool          `json:"active"`
-	Weather   []WeatherData `json:"weather"`
+	Weather   []WeatherData `json:"weather" gorm:"foreignKey:CollectedFrom;references:ID"`
 }
 
 /*

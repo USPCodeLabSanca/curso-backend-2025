@@ -1,6 +1,6 @@
 services:
   database:
-    image: timescale/timescaledb:latest-pg15
+    image: postgres:15
     container_name: climate-db
     restart: unless-stopped
     environment:

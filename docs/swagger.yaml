@@ -1,0 +1,329 @@
+definitions:
+  domain.CreateNeighborhoodDTO:
+    properties:
+      active:
+        type: boolean
+      area:
+        type: number
+      habitants:
+        type: integer
+      latitude:
+        type: number
+      longitude:
+        type: number
+      name:
+        type: string
+    required:
+    - area
+    - habitants
+    - latitude
+    - longitude
+    - name
+    type: object
+  domain.Neighborhood:
+    properties:
+      active:
+        type: boolean
+      area:
+        type: number
+      created_at:
+        type: string
+      deleted_at:
+        type: string
+      habitants:
+        type: integer
+      id:
+        type: integer
+      latitude:
+        type: number
+      longitude:
+        type: number
+      name:
+        type: string
+      updated_at:
+        type: string
+      weather:
+        items:
+          $ref: '#/definitions/domain.WeatherData'
+        type: array
+    type: object
+  domain.WeatherCode:
+    enum:
+    - 0
+    - 1
+    - 2
+    - 3
+    - 45
+    - 48
+    - 51
+    - 53
+    - 55
+    - 56
+    - 57
+    - 61
+    - 63
+    - 65
+    - 66
+    - 67
+    - 71
+    - 73
+    - 75
+    - 77
+    - 80
+    - 81
+    - 82
+    - 85
+    - 86
+    - 95
+    - 96
+    - 99
+    type: integer
+    x-enum-varnames:
+    - ClearSky
+    - PartlyCloudy
+    - MostlyCloudy
+    - Overcast
+    - Mist
+    - FreezingMist
+    - DrizzleLight
+    - DrizzleModerate
+    - DrizzleHeavy
+    - FreezingDrizzleLight
+    - FreezingDrizzleHeavy
+    - RainLight
+    - RainModerate
+    - RainHeavy
+    - FreezingRainLight
+    - FreezingRainHeavy
+    - SnowLight
+    - SnowModerate
+    - SnowHeavy
+    - SnowGrains
+    - ShowersLight
+    - ShowersModerate
+    - ShowersViolent
+    - SnowShowersLight
+    - SnowShowersHeavy
+    - ThunderstormLight
+    - ThunderstormHailLight
+    - ThunderstormHailHeavy
+  domain.WeatherData:
+    properties:
+      code:
+        $ref: '#/definitions/domain.WeatherCode'
+      collectedAt:
+        type: string
+      collectedFrom:
+        description: Neighborhood
+        type: integer
+      created_at:
+        type: string
+      deleted_at:
+        type: string
+      humidity:
+        type: number
+      id:
+        type: integer
+      rainProbability:
+        type: number
+      rainVolume:
+        type: number
+      temperature:
+        type: number
+      updated_at:
+        type: string
+    type: object
+  exception.Exception:
+    properties:
+      message:
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  description: Weather API docs
+  title: Weather API
+  version: "1.0"
+paths:
+  /api/neighborhoods:
+    get:
+      description: Retorna todos os bairros cadastrados
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/domain.Neighborhood'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/exception.Exception'
+      summary: Lista todos os bairros
+      tags:
+      - Neighborhood
+    put:
+      consumes:
+      - application/json
+      description: Atualiza os dados de um bairro existente
+      parameters:
+      - description: Dados do bairro
+        in: body
+        name: neighborhood
+        required: true
+        schema:
+          $ref: '#/definitions/domain.Neighborhood'
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/exception.Exception'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/exception.Exception'
+      summary: Atualiza um bairro
+      tags:
+      - Neighborhood
+  /api/neighborhoods/{id}:
+    delete:
+      description: Remove um bairro existente pelo ID
+      parameters:
+      - description: ID do bairro
+        in: path
+        name: id
+        required: true
+        type: integer
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/exception.Exception'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/exception.Exception'
+      summary: Deleta um bairro
+      tags:
+      - Neighborhood
+    get:
+      description: Retorna os dados de um bairro pelo seu ID
+      parameters:
+      - description: ID do bairro
+        in: path
+        name: id
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.Neighborhood'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/exception.Exception'
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/exception.Exception'
+      summary: Busca bairro por ID
+      tags:
+      - Neighborhood
+  /api/neighborhoods/{id}/weather/{start}/{end}:
+    get:
+      description: Retorna os registros de clima de um bairro entre duas datas
+      parameters:
+      - description: ID do bairro
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Data inicial (YYYY-MM-DD)
+        in: path
+        name: start
+        required: true
+        type: string
+      - description: Data final (YYYY-MM-DD)
+        in: path
+        name: end
+        required: true
+        type: string
+      responses:
+        "200":
+          description: Bairro com dados de clima
+          schema:
+            $ref: '#/definitions/domain.Neighborhood'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/exception.Exception'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/exception.Exception'
+      summary: Clima de um bairro
+      tags:
+      - Neighborhood
+  /api/neighborhoods/active:
+    get:
+      description: Retorna apenas os bairros ativos
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/domain.Neighborhood'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/exception.Exception'
+      summary: Lista bairros ativos
+      tags:
+      - Neighborhood
+  /api/neighborhoods/new:
+    post:
+      consumes:
+      - application/json
+      description: Cria um novo bairro com os dados fornecidos
+      parameters:
+      - description: Dados do bairro a ser criado
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/domain.CreateNeighborhoodDTO'
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Cria um bairro
+      tags:
+      - Neighborhood
+swagger: "2.0"
